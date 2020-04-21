@@ -15,7 +15,7 @@ const createFilterMarkup = (filter, isChecked) => {
 };
 
 export const createFilterTemplate = (filters) => {
-  const filtersMarkup = filters.reduce((currentValue, index) => createFilterMarkup((currentValue, index === 0)), ``);
+  const filtersMarkup = filters.reduce((accumulator, currentValue, index) => accumulator + createFilterMarkup(currentValue, index === 0), ``);
 
   return (
     `<section class="main__filter filter container">

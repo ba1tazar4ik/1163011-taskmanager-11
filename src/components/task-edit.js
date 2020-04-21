@@ -3,8 +3,8 @@ import {formatTime} from "../utils.js";
 
 const createColorsMarkup = (colors, currentColor) => {
   return colors
-    .map((color, index) => {
-      return (
+    .reduce((accumulator, color, index) => {
+      return accumulator + (
         `<input
           type="radio"
           id="color-${color}-${index}"
@@ -19,15 +19,14 @@ const createColorsMarkup = (colors, currentColor) => {
           >${color}</label
         >`
       );
-    })
-    .join(`\n`);
+    }, ``);
 };
 
 const createRepeatingDaysMarkup = (days, repeatingDays) => {
   return days
-    .map((day, index) => {
+    .reduce((accumulator, day, index) => {
       const isChecked = repeatingDays[day];
-      return (
+      return accumulator + (
         `<input
           class="visually-hidden card__repeat-day-input"
           type="checkbox"
@@ -40,15 +39,40 @@ const createRepeatingDaysMarkup = (days, repeatingDays) => {
           >${day}</label
         >`
       );
-    })
-    .join(`\n`);
+    }, ``);
+};
+
+const createDateShowingMarkup = (date, time) => {
+  return (
+    `<fieldset class="card__date-deadline">
+                      <label class="card__input-deadline-wrap">
+                        <input
+                          class="card__date"
+                          type="text"
+                          placeholder=""
+                          name="date"
+                          value="${date} ${time}"
+                        />
+                      </label>
+                    </fieldset>`
+  );
+};
+
+const createRepeatingTaskMarkup = (markup) => {
+  return (
+    `<fieldset class="card__repeat-days">
+                      <div class="card__repeat-days-inner">
+                        ${markup}
+                      </div>
+                    </fieldset>`
+  );
 };
 
 
 export const createTaskEditTemplate = (task) => {
   const {description, dueDate, color, repeatingDays} = task;
 
-  const isExpired = dueDate instanceof Date && dueDate < Date.now();
+  const isExpired = dueDate && dueDate < Date.now();
   const isDateShowing = !!dueDate;
 
   const date = isDateShowing ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
@@ -58,7 +82,7 @@ export const createTaskEditTemplate = (task) => {
   const repeatClass = isRepeatingTask ? `card--repeat` : ``;
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
-  const colorsMarkup = createColorsMarkup(COLORS,color);
+  const colorsMarkup = createColorsMarkup(COLORS, color);
   const repeatingDaysMarkup = createRepeatingDaysMarkup(DAYS, repeatingDays);
 
   return (
@@ -88,35 +112,14 @@ export const createTaskEditTemplate = (task) => {
                   date: <span class="card__date-status">${isDateShowing ? `yes` : `no`}</span>
                 </button>
 
-                ${
-    isDateShowing ?
-      `<fieldset class="card__date-deadline">
-                      <label class="card__input-deadline-wrap">
-                        <input
-                          class="card__date"
-                          type="text"
-                          placeholder=""
-                          name="date"
-                          value="${date} ${time}"
-                        />
-                      </label>
-                    </fieldset>`
-      : ``
-    }
+                ${isDateShowing ? createDateShowingMarkup(date, time) : ``}
 
                 <button class="card__repeat-toggle" type="button">
                   repeat:<span class="card__repeat-status">${isRepeatingTask ? `yes` : `no`}</span>
                 </button>
 
-                  ${
-    isRepeatingTask ?
-      `<fieldset class="card__repeat-days">
-                      <div class="card__repeat-days-inner">
-                        ${repeatingDaysMarkup}
-                      </div>
-                    </fieldset>`
-      : ``
-    }
+                  ${isRepeatingTask ? createRepeatingTaskMarkup(repeatingDaysMarkup) : ``}
+
               </div>
             </div>
 
