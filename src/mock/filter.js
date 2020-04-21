@@ -2,7 +2,7 @@ const filterNames = [
   `all`, `overdue`, `today`, `favorites`, `repeating`, `archive`
 ];
 
-const generateCountForFilters = (tasks, filterName) => {
+const generateCountForFilters = (tasks, dateNow, filterName) => {
   let count;
   switch (filterName) {
 
@@ -11,11 +11,14 @@ const generateCountForFilters = (tasks, filterName) => {
       break;
 
     case `overdue`:
-      count = tasks.slice().filter((it) => it.dueDate < Date.now()).length;
+      count = tasks.slice().filter((it) => it.dueDate < dateNow).length;
       break;
 
     case `today`:
-      count = tasks.slice().filter((it) => it.dueDate === Date.now()).length;
+      count = tasks.slice().filter((it) => it.dueDate
+        && it.dueDate.getFullYear() === dateNow.getFullYear()
+        && it.dueDate.getMonth() === dateNow.getMonth()
+        && it.dueDate.getDate() === dateNow.getDate()).length;
       break;
 
     case `favorites`:
@@ -34,10 +37,11 @@ const generateCountForFilters = (tasks, filterName) => {
 };
 
 const generateFilters = (tasks) => {
+  const dateNow = new Date();
   return filterNames.map((it) => {
     return {
       name: it,
-      count: generateCountForFilters(tasks, it),
+      count: generateCountForFilters(tasks, dateNow, it),
     };
   });
 };
