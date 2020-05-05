@@ -15,7 +15,7 @@ const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 const renderTask = (taskListElement, task) => {
-  const taskEditComponent = new TaskEditComponent(task);
+  let taskEditComponent = ``;
 
   const replaceTaskToEdit = () => {
     taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
@@ -37,7 +37,7 @@ const renderTask = (taskListElement, task) => {
   const taskComponent = new TaskComponent(task);
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   editButton.addEventListener(`click`, () => {
-
+    taskEditComponent = new TaskEditComponent(task);
     const editForm = taskEditComponent.getElement().querySelector(`form`);
     editForm.addEventListener(`submit`, (evt) => {
       evt.preventDefault();
