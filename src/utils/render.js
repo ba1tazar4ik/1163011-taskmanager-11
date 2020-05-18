@@ -31,7 +31,7 @@ export const replace = (newComponent, oldComponent) => {
   if (isExistElements && parentElement.contains(oldElement)) {
     parentElement.replaceChild(newElement, oldElement);
   }
-}
+};
 
 export const remove = (component) => {
   component.getElement().remove();
