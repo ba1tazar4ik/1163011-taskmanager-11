@@ -90,7 +90,7 @@ export default class BoardController {
 
       this._loadMoreButtonComponent.setClickHandler(() => {
         const prevTasksCount = showingTasksCount;
-        showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+        showingTasksCount += SHOWING_TASKS_COUNT_BY_BUTTON;
 
         const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), prevTasksCount, showingTasksCount);
 
